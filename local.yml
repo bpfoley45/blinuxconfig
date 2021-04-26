@@ -36,7 +36,6 @@
     tags: always
     yum:
       autoremove: yes
-      purge: yes
     when: ansible_distribution in ["Redhat", "Fedora"]
 
 #  - name: send completion alert
