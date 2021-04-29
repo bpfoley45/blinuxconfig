@@ -1,0 +1,110 @@
+---
+- name: Users | bpfoley | create group
+  tags: groups,bpfoley,users
+  group:
+    name: bpfoley
+    state: present
+
+- name: Users | bpfoley | create user
+  tags: bpfoley,sudo,users
+  user:
+    name: bpfoley
+    group: bpfoley
+    groups:
+      - adm
+      - ansible
+      - wheel
+    state: present
+    comment: "Brendan Foley"
+    #password: "{{ bpfoley_passwd }}"
+    shell: /bin/bash
+
+- name: Users | bpfoley | create .ssh directory
+  tags: dotfiles,bpfoley,ssh,users
+  file:
+    path: "{{ item.dir }}"
+    state: directory
+    owner: bpfoley
+    group: bpfoley
+    mode: 0700
+  with_items:
+    - { dir: '/home/bpfoley/.ssh' }
+
+- name: Users | bpfoley | add public key
+  tags: dotfiles,bpfoley,ssh,ssh-keys,users
+  authorized_key:
+    user: bpfoley
+    key: "{{ item }}"
+  with_file:
+    - users/bpfoley/ssh/bpfoley@synergy.pub
+
+- name: Users | bpfoley | create config directories
+  tags: dotfiles,bpfoley,tmux,users
+  file:
+    path: /home/bpfoley/{{ item.dir }}
+    state: directory
+    owner: bpfoley
+    group: bpfoley
+    mode: 0700
+  with_items:
+    - { dir: '.bash' }
+    - { dir: '.config' }
+    - { dir: '.config/htop' }
+    - { dir: '.tmux' }
+    - { dir: '.tmux/config' }
+    - { dir: '.tmux/plugins' }
+
+- name: users | bpfoley | copy dotfiles
+  tags: dotfiles,users,bpfoley,tmux,users,vim,zsh
+  copy:
+    src: users/bpfoley/{{ item.src }}
+    dest: /home/bpfoley/{{ item.dest }}
+    owner: bpfoley
+    group: bpfoley
+    mode: 0600
+  with_items:
+    - { src: 'bash/bash_prompt', dest: '.bash/bash_prompt' }
+    - { src: 'bash/bashrc', dest: '.bashrc' }
+    - { src: 'git/gitconfig', dest: '.gitconfig' }
+    - { src: 'inputrc', dest: '.inputrc' }
+    - { src: 'htop/htoprc', dest: '.config/htop/htoprc' }
+
+- name: Users | bpfoley | clone posh-git-sh repository
+  tags: dotfiles,bpfoley,users
+  git:
+    repo: https://github.com/lyze/posh-git-sh.git
+    dest: /home/bpfoley/git/posh-git-sh
+    force: yes
+
+- name: Users | bpfoley | copy tmux config
+  tags: dotfiles,users,bpfoley,tmux,users,vim,zsh
+  copy:
+    src: users/bpfoley/tmux/tmux.conf
+    dest: /home/bpfoley/.tmux.conf
+    owner: bpfoley
+    group: bpfoley
+    mode: 0600
+
+- name: users | bpfoley | clone tmux-completion plugin repository
+  tags: dotfiles,bpfoley,users,tmux
+  git:
+    repo: https://github.com/srsudar/tmux-completion.git
+    dest: /home/bpfoley/.tmux/plugins/completion
+    force: yes
+  notify: update_tmux_plugin_perms
+
+- name: users | bpfoley | clone tmux-continuum plugin repository
+  tags: dotfiles,bpfoley,users,tmux
+  git:
+    repo: https://github.com/tmux-plugins/tmux-continuum
+    dest: /home/bpfoley/.tmux/plugins/continuum
+    force: yes
+  notify: update_tmux_plugin_perms
+
+- name: users | bpfoley | clone tmux-resurrect plugin repository
+  tags: dotfiles,bpfoley,users,tmux
+  git:
+    repo: https://github.com/tmux-plugins/tmux-resurrect
+    dest: /home/bpfoley/.tmux/plugins/resurrect
+    force: yes
+  notify: update_tmux_plugin_perms

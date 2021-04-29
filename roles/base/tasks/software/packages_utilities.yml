@@ -1,0 +1,13 @@
+---
+- name: Software | Utilities | Install
+  package:
+    state: present
+    name:
+      - bat
+      - nmap
+      - curl
+      - htop
+      - tmux
+      - lsof
+      - neofetch
+      - tldr

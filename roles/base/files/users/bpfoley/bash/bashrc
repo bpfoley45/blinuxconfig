@@ -1,0 +1,65 @@
+# .bashrc
+
+# Source global definitions
+if [ -f /etc/bashrc ]; then
+	. /etc/bashrc
+fi
+
+# allow previous command searching
+if [[ $- == *i* ]]
+then
+    bind '"\e[A": history-search-backward'
+    bind '"\e[B": history-search-forward'
+fi
+
+# User specific environment
+if ! [[ "$PATH" =~ "$HOME/.local/bin:$HOME/bin:" ]]
+then
+    PATH="$HOME/.local/bin:$HOME/bin:$PATH"
+fi
+export PATH
+
+# Uncomment the following line if you don't like systemctl's auto-paging feature:
+# export SYSTEMD_PAGER=
+
+if [ $EUID = 0 ]; then
+	PS1='\[\e[31m\]\u@\h\[\e[0m\]:\[\e[36m\]\w\[\e[00m\] \$ '
+	alias rm='rm -i'
+	alias cp='cp -i'
+	alias mv='mv -i'
+else
+	if [ -f ~/git-prompt.sh ]; then	
+		source ~/git/posh-git-sh/git-prompt.sh
+		export PROMPT_COMMAND='__posh_git_ps1 "\[\e[32m\]\u\[\e[33m\]@\h\[\e[0m\]:\[\e[36m\]\w\[\e[00m\] \[\e[1;33m\][$(date +"%Y-%m-%d %I:%M:%S %p")]\e[0m " "\n\$ ";'$PROMPT_COMMAND
+		#PS1='\[\e[32m\]\u\[\e[33m\]@\h\[\e[0m\]:\[\e[36m\]\w\[\e[00m\] \[\e[2;33m\][$(date +"%Y-%m-%d %I:%M:%S %p")]\[\e[00m\]$ '
+	else
+		PS1='\[\e[32m\]\u\[\e[33m\]@\h\[\e[0m\]:\[\e[36m\]\w\[\e[00m\] \[\e[2;33m\][$(date +"%Y-%m-%d %I:%M:%S %p")]\[\e[00m\]$ '
+	fi
+fi
+
+HISTSIZE=5000
+
+# User specific aliases and function
+#Aliases
+alias ccat='/usr/bin/cat'
+alias pss='ps -ef | grep -v grep | grep '
+alias cls="clear"
+alias gip="curl whatismyip.rit.edu"
+alias h="history"
+#alias ram='ps axc -o cmd:15,%mem --sort=-%mem | head'
+#alias cpu='ps axc -o cmd:15,%cpu --sort=-%cpu | head'
+alias cpu='ps -eo pid:5,ppid:5,cmd:100,%mem,%cpu --sort=-%cpu | head'
+alias mem='ps -eo pid:5,ppid:5,cmd:100,%mem,%cpu --sort=-%mem | head'
+alias cp='cp -iv'
+alias mv='mv -iv'
+alias ll='ls -alhF --color'
+
+# So I don't need to remember the options to tar every time
+alias untar='tar xzvf'
+alias tarup='tar czvf'
+#ldap, quiet mode to hide SASL/GSSAPI output and specify bunch o' DCs. in future make a function to generate -H input
+alias ldap="ldapsearch -LLL -Q -H 'ldaps://maindc02b.main.ad.rit.edu:636 ldaps://maindc02a.main.ad.rit.edu:636 ldaps://maindc02c.main.ad.rit.edu' -Y GSSAPI "
+alias ldapad="ldapsearch -LLL -Q -H 'ldaps://addc02b.ad.rit.edu:636 ldaps://addc02a.ad.rit.edu:636 ldaps://addc02c.ad.rit.edu' -Y GSSAPI -b 'dc=ad,dc=rit,dc=edu' "
+
+#if we have bat installed, alias cat to bat
+[[ -f /usr/bin/bat ]] && alias cat=bat

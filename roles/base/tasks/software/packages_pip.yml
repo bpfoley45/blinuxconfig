@@ -1,0 +1,6 @@
+- name: Software | Pip Packages | install bpytop
+  become_user: bpfoley
+  pip:
+    executable: /usr/bin/pip3
+    state: latest
+    name: bpytop
