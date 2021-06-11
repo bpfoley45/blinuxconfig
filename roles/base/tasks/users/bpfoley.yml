@@ -67,6 +67,7 @@
     - { src: 'bash/bashrc', dest: '.bashrc' }
     - { src: 'git/gitconfig', dest: '.gitconfig' }
     - { src: 'inputrc', dest: '.inputrc' }
+    - { src: 'virc', dest: '.virc' }
     - { src: 'htop/htoprc', dest: '.config/htop/htoprc' }
 
 - name: Users | bpfoley | clone posh-git-sh repository

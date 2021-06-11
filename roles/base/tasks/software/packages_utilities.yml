@@ -1,6 +1,6 @@
 ---
 - name: Software | Utilities | Install
-  package:
+  yum:
     state: present
     name:
       - bat
@@ -11,3 +11,15 @@
       - lsof
       - neofetch
       - tldr
+      - strongswan
+      - openldap-clients
+      - sssd-tools
+      - httpie
+      - jq
+      - podman
+      - kernel-tools
+      - ncdu
+      - glances
+      - bpytop
+      - fail2ban
+  when: ansible_os_family == "RedHat"

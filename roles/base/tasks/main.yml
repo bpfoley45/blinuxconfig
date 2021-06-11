@@ -2,7 +2,8 @@
 - name: User | add user bpfoley
   include_tasks: users/bpfoley.yml
 
-- block:
+- name: Software Installation
+  block:
   - import_tasks: software/repositories.yml
   - import_tasks: software/packages_utilities.yml
   #- import_tasks: software/packages_pip.yml
